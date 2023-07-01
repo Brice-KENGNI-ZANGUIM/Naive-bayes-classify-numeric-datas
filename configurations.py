@@ -1,15 +1,13 @@
-# The configuration of your build-in datas
-
-"""
-DESCRIPTION :
-------------
-    Contains all datas informations and variables needed to build them
-
-AUTHOR : 
--------
-    Name : Brice KENGNI ZANGUIM
-    mail : kenzabri2@yahoo.com
-"""
+#  DESCRIPTION :
+#  ------------
+#      The configuration of your build-in datas
+#      Contains all datas informations and variables needed to build the datas to train de Naïve bayes model
+#
+#  AUTHOR : 
+#  -------
+#      Name : Brice KENGNI ZANGUIM
+#      mail : kenzabri2@yahoo.com
+#
 
 ############################################################################################################
 ##########################                    MODULES IMPORTATION                 ##########################
@@ -26,6 +24,7 @@ from params_classes import  (
 FEATURES = [ "fetaure_gauss_1", "fetaure_gauss_2", "fetaure_binom_3", "fetaure_poisson_4", "fetaure_uniform_5" ]
 
 #liste of differents classes to classify datas: could be a list of dog breeds, horse breeds, plant breeds, stars type, SPAM-HAM . . .etc 
+# you can add more classes as you need or remove some; but by doing that make sure you also update the dictionary 'classes_params' below
 CLASSES = [ "class_1", "class_2", "class_3" ]
 
 # number of sample to generate for every class

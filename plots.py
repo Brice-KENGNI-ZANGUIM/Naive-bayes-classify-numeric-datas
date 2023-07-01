@@ -1,6 +1,13 @@
+############################################################################################################
+##########################                    MODULES IMPORTATION                 ##########################
+############################################################################################################
 import matplotlib.pyplot as plt
 from sklearn import metrics
 import numpy as np
+
+############################################################################################################
+##########################                     DEFINE FUNCTIONS                   ##########################
+############################################################################################################
 
 def print_confusion_matrix(label_true , label_predict, class_names, figsize = (8,7), cmap = plt.cm.Blues): 
     import itertools
@@ -8,8 +15,7 @@ def print_confusion_matrix(label_true , label_predict, class_names, figsize = (8
     """
     DESCRIPTION : 
     ------------
-        Affiche la transposée de la  matrice de confusion tel que fournie par 
-        la fonction sklearn.metrics.confusion_matrix, sous forme de heatmap
+        Affiche la  matrice de confusion tel que fournie par la fonction sklearn.metrics.confusion_matrix, sous forme de heatmap
     
     PARAMETERS :
     -----------
@@ -21,7 +27,7 @@ def print_confusion_matrix(label_true , label_predict, class_names, figsize = (8
     RETURN : None
     -------
     
-    """    
+    """
 
     confusion_matrix = metrics.confusion_matrix( label_true , label_predict)
     print( confusion_matrix)
