@@ -3,25 +3,40 @@
 ############################################################################################################
 import pandas as pd
 from samples_generators import (
-    gaussian_generator,
-    uniform_generator,
-    poisson_generator,
-    binomial_generator
-)
+                                gaussian_generator,
+                                uniform_generator,
+                                poisson_generator,
+                                binomial_generator
+                            )
 
 from configurations import (
-    FEATURES, 
-    CLASSES, 
-    N_SAMPLE, 
-    classes_params
-)
+                            FEATURES, 
+                            CLASSES, 
+                            N_SAMPLE, 
+                            classes_params
+                        )
 
 ############################################################################################################
 ##########################                   FUNCTIONS DEFINITION                 ##########################
 ############################################################################################################
 
 def get_distribution ( repr ):
+    """
+    DESCRIPTION :
+    -----------
+        provide the name of the probability distribution by analysing the '__repr__()' output
 
+    PARAMETERS :
+    -----------
+        - repr : str  
+            the output of the method '__repr()' from the 'dataclass' params
+
+    RETURN :
+    ------
+        - str : 
+            The name of the distribution. The output can take the value 'gaussian', 'poisson', 'binomial' or 'uniform'
+
+    """
     if "gaussian" in repr and "mu=" in repr and "sigma=" in repr :
         distrib =  "gaussian"
     elif "uniform" in repr and "a=" in repr and "b=" in repr :
@@ -42,8 +57,11 @@ def split_datas ( dataframe , frac = (.7 , .3 ) ) :
 
     PARAMETERS :
     -----------
-        - dataframe (DataFrame): initial DataFrame to be split in two parts
-        - frac ( tuple) : a tuple that contain the proportion of train and test data to perform
+        - dataframe : DataFrame
+            Initial DataFrame to be split in two parts
+
+        - frac : tuple
+            A tuple that contain the proportion of train and test data to perform
             The first element correspond to the proportion of training set and the second to the test
 
     RETURN :
@@ -70,16 +88,28 @@ def split_datas ( dataframe , frac = (.7 , .3 ) ) :
 
 def generate_datas(classes = CLASSES, features =FEATURES, n_samples = N_SAMPLE, params = classes_params):
     """
-    Generate synthetic data for a specific breed of dogs based on given features and parameters.
+    DESCRIPTION :
+    ------------
+        Generate synthetic data for every classes based on given features and parameters.
 
-    Parameters:
-        - classes (str): The class for which data is generated.
-        - features (list[str]): List of features to generate data for (e.g., "height", "weight", "bark_days", "ear_head_ratio").
-        - n_samples (int): Number of samples to generate for each feature.
-        - params (dict): Dictionary containing parameters for each class and its features.
+    PARAMETERS :
+    -----------
+        - classes : str
+            The class for which data is generated.
 
-    Returns:
-        - df (pandas.DataFrame): A DataFrame containing the generated synthetic data.
+        - features : list[str])
+            List of features to generate data for (e.g:"height", "weight", "lifetime" ,"bark_days", "radius", "mass", "temperature", "income" . . .)
+
+        - n_samples : int
+            Number of samples to generate for each feature.
+
+        - params : dict
+            Dictionary containing parameters for each class and its features.
+
+    RETURNS :
+    --------
+        - df : pandas.DataFrame
+            A DataFrame containing the generated synthetic data.
             The DataFrame will have columns for each feature and an additional column for the class.
     """
     

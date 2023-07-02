@@ -14,18 +14,28 @@ from configurations import FEATURES, CLASSES
 ##########################                     DEFINE FUNCTIONS                   ##########################
 ############################################################################################################
 
-def compute_training_params(df, features= FEATURES, classes = CLASSES):
+def compute_training_params(data, features= FEATURES, classes = CLASSES):
     """
-    Computes the estimated parameters for training a model based on the provided dataframe and features.
+    PARAMETERS :
+    -----------
+        Computes the estimated parameters for training a model based on the provided dataframe and features.
 
-    Args:
-        df (pandas.DataFrame): The dataframe containing the training data.
-        features (list): A list of feature names to consider.
+    PARAMETERS :
+    -----------
+        - data : pandas.DataFrame
+            The dataframe containing the training data.
+        - features : list)
+            A list of feature names to consider for the probability computation.
+        - classes : list
+            A list of classes present in our data provide by 'data'
 
-    Returns:
-        tuple: A tuple containing two dictionaries:
-            - params_dict (dict): A dictionary that contains the estimated parameters for each breed and feature.
-            - probs_dict (dict): A dictionary that contains the proportion of data belonging to each breed.
+    RETURNS :
+    --------
+        tuple : A tuple containing two dictionaries:
+            - params_dict : dict
+                A dictionary that contains one part of the estimate posterior probability for each class and feature : P(feature|class)
+            - probs_dict : dict
+                A dictionary that contains the proportion of data belonging to each class.
     """
     
     # Dict that should contain the estimated parameters
@@ -38,10 +48,10 @@ def compute_training_params(df, features= FEATURES, classes = CLASSES):
     for classe in classes :
         
         # Slice the original df to only include data for the current class and the feature columns
-        df_classe = df[df["class"] == classe][features]
+        sub_data = data[data["class"] == classe][features]
         
         # Save the probability of each class (breed) in the probabilities dict
-        probs_dict[classe] = df_classe.shape[0]/df.shape[0]
+        probs_dict[classe] = sub_data.shape[0]/data.shape[0]
         
         # Initialize the inner dict
         inner_dict = {} 
@@ -52,22 +62,22 @@ def compute_training_params(df, features= FEATURES, classes = CLASSES):
             match distrib:
                 case "gaussian": 
                     # Estimate parameters assuming a gaussian distribution of the current feature
-                    mu , sigma = estimate_gaussian_params( df_classe[feature] )
+                    mu , sigma = estimate_gaussian_params( sub_data[feature] )
                     estimate_param = params_gaussian( mu = mu , sigma = sigma )
                     
                 case "binomial":
                     # Estimate parameters assuming a binomial distribution of the current feature
-                    n , p = estimate_binomial_params( df_classe[feature] )
+                    n , p = estimate_binomial_params( sub_data[feature] )
                     estimate_param = params_binomial( n = n , p = p)
                     
                 case "uniform":
                     # Estimate parameters assuming a uniform distribution of the current feature
-                    a , b = estimate_uniform_params( df_classe[feature] )
+                    a , b = estimate_uniform_params( sub_data[feature] )
                     estimate_param = params_uniform( a = a , b = b)
 
                 case "poisson":
                     # Estimate parameters assuming a uniform distribution of the current feature
-                    lamda = estimate_poisson_params( df_classe[feature] )
+                    lamda = estimate_poisson_params( sub_data[feature] )
                     estimate_param = params_poisson( lamda = lamda)
 
             # Save the dataclass object within the inner dict
@@ -81,18 +91,27 @@ def compute_training_params(df, features= FEATURES, classes = CLASSES):
 
 def prob_of_X_given_class( X, classe, params_dict, features = FEATURES ):
     """
-    Calculate the conditional probability of X given a specific class, using the given features and parameters.
+    DESCRIPTION :
+    ------------
+        Calculate the conditional probability of X given a specific class, using the given features and parameters.
 
-    Args:
-        X (list): List of feature values for which the probability needs to be calculated.
-        features (list): List of feature names corresponding to the feature values in X.
-        breed (str): The breed for which the probability is calculated.
-        params_dict (dict): Dictionary containing the parameters for different breeds and features.
+    PARAMETERS :
+    -----------
+        - X : list
+            List of feature values of an observable for which the probability needs to be calculated.
+        - classe : str
+            The class for which the probability is calculated.
+        - params_dict : dict
+            Dictionary containing the parameters for different breeds and features.
+        - features : list
+            List of feature names corresponding to the feature values in X.
 
-    Returns:
-        float: The conditional probability of X given the specified breed.
+    RETURNS :
+    --------
+        float: The conditional probability of X given the specified class 'classe'.
     """
     
+    # To assure that the list of feature 'features' name and the provides values X have the same size 
     if len(X) != len(features):
         print("X and list of features should have the same length")
         return 0
@@ -129,16 +148,22 @@ def prob_of_X_given_class( X, classe, params_dict, features = FEATURES ):
 
 def predict_class(X, params_dict, probs_dict):
     """
-    Predicts the breed based on the input and features.
+    DESCRIPTION :
+    ----------
+        Predicts the breed based on the input and features.
 
-    Args:
-        X (array-like): The input data for prediction.
-        features (array-like): The features used for prediction.
-        params_dict (dict): A dictionary containing parameters for different classes.
-        probs_dict (dict): A dictionary containing probabilities for different classes.
+    PARAMETERS :
+    -----------
+        - X : array-like
+            The input data for prediction.
+        - params_dict : dict
+            A dictionary containing parameters for different classes.
+        - probs_dict : dict
+            A dictionary containing probabilities for different classes.
 
-    Returns:
-        int: The predicted breed index.
+    RETURNS :
+    --------
+        str : The predicted class name.
     """
 
     # Calcul all the probabilities for every classes

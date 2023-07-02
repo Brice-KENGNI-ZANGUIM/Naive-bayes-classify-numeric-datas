@@ -9,18 +9,25 @@ from scipy.stats import  binom
 ############################################################################################################
 ##########################                      DEFINE FUNCTIONS                  ##########################
 ############################################################################################################
-
 def uniform_generator(a, b, num_samples=100):
     """
-    Generates an array of uniformly distributed random numbers within the specified range.
+    DESCRIPTION :
+    ------------
+        Generates an array of uniformly distributed random numbers within the specified range [a,b[
 
-    Parameters:
-    - a (float): The lower bound of the range.
-    - b (float): The upper bound of the range.
-    - num_samples (int): The number of samples to generate (default: 100).
+    PARAMETERS :
+    -----------
+        - a : float
+             The lower bound of the range.
+        - b : float 
+            The upper bound of the range.
+        - num_samples : int 
+            The number of samples to generate (default: 100).
 
-    Returns:
-    - array (ndarray): An array of random numbers sampled uniformly from the range [a, b).
+    RETURNS  :
+    ---------
+        - array : ndarray
+             An array of random numbers sampled uniformly from the range [a, b).
     """
 
     array = np.random.uniform(a , b , num_samples)
@@ -29,15 +36,22 @@ def uniform_generator(a, b, num_samples=100):
 
 def inverse_cdf_gaussian(y, mu, sigma):
     """
-    Calculates the inverse cumulative distribution function (CDF) of a Gaussian distribution.
+    DESCRIPTION :
+    ------------
+        Calculates the inverse cumulative distribution function (CDF) of a Gaussian distribution.
 
-    Parameters:
-    - y (float or ndarray): The probability or array of probabilities.
-    - mu (float): The mean of the Gaussian distribution.
-    - sigma (float): The standard deviation of the Gaussian distribution.
+    PARAMETERS :
+    -----------
+        - y : float or ndarray
+             The probability or array of probabilities.
+        - mu : float   
+            The mean of the Gaussian distribution.
+        - sigma : float
+            The standard deviation of the Gaussian distribution.
 
-    Returns:
-    - x (float or ndarray): The corresponding value(s) from the Gaussian distribution that correspond to the given probability/ies.
+    RETURNS :
+        - x : float or ndarray
+             The corresponding value(s) from the Gaussian distribution that correspond to the given probability/ies.
     """
 
     x = mu + sigma*np.sqrt(2)*scipy.special.erfinv(2*y-1)
@@ -45,7 +59,24 @@ def inverse_cdf_gaussian(y, mu, sigma):
     return x
 
 def gaussian_generator(mu, sigma, num_samples):
+    """
+    DESCRIPTION :
+    ------------
+        Generate Gaussian distribute sample with specific parameter.
 
+    PARAMETERS :
+    -----------
+        - mu : float   
+            The mean of the Gaussian distribution.
+        - sigma : float
+            The standard deviation of the Gaussian distribution.
+        - num_sample : int
+            size of the sample data to generate 
+
+    RETURNS :
+        - x : ndarray
+            The corresponding array containing gaussian distributes datas
+    """
     # Array with num_samples elements that distribute uniformally between 0 and 1
     u = uniform_generator(0 , 1 , num_samples)
 
@@ -56,43 +87,74 @@ def gaussian_generator(mu, sigma, num_samples):
 
 def inverse_cdf_binomial(y, n, p):
     """
-    Calculates the inverse cumulative distribution function (CDF) of a binomial distribution.
+    DESCRIPTION : 
+    ------------
+        Calculates the inverse cumulative distribution function (CDF) of a binomial distribution.
 
-    Parameters:
-    - y (float or ndarray): The probability or array of probabilities.
-    - n (int): The number of trials in the binomial distribution.
-    - p (float): The probability of success in each trial.
+    PARAMETERS :
+    -----------
+        - y : float or ndarray
+             The probability or array of probabilities.
+        - n :int
+             The number of trials in the binomial distribution.
+        - p : float
+             The probability of success in each trial.
 
-    Returns:
-    - x (float or ndarray): The corresponding value(s) from the binomial distribution that correspond to the given probability/ies.
+    RETURNS :
+    --------
+        - x : float or ndarray
+             The corresponding value(s) from the binomial distribution that correspond to the given probability/ies.
     """
-
+    if not isinstance(n , int ) : n = int(n) +1
     x = binom.ppf(y, n, p)
 
     return x
 
 def binomial_generator(n, p, num_samples):
     """
-    Generates an array of binomially distributed random numbers.
+    DESCRIPTION :
+    ------------
+        Generates an array of binomially distributed random numbers.
 
-    Args:
-        n (int): The number of trials in the binomial distribution.
-        p (float): The probability of success in each trial.
-        num_samples (int): The number of samples to generate.
+    PARAMETERS :
+    -----------
+        n : int
+            The number of trials in the binomial distribution.
+        p : float
+            The probability of success in each trial.
+        num_samples : int
+             The number of samples to generate.
 
-    Returns:
-        array: An array of binomially distributed random numbers.
+    RETURNS :
+    -------
+        array:  
+            An array of binomially distributed random numbers.
     """
-
-    # Generate an array with num_samples elements that distribute uniformally between 0 and 1
+    if not isinstance(n , int ) : n = int(n) +1
+    # First generate an array with num_samples elements that distribute uniformally between 0 and 1
     u = uniform_generator(0 , 1 , num_samples)
 
     # Use the uniform-distributed sample to generate binomial-distributed data
-    # Hint: You need to sample from the inverse of the CDF of the distribution you are generating
     array = inverse_cdf_binomial(u , n, p)
-
+    
     return array
 
 def poisson_generator ( lamda, num_samples): 
+    """
+    DESCRIPTION :
+    ------------
+        Generates an array of poisson  distributed random numbers.
 
+    PARAMETERS :
+    -----------
+        lamda : float
+            Corresponding mean value of the poisson distribution
+        num_samples : int
+             The number of samples to generate.
+
+    RETURNS :
+    -------
+        array:  
+            An array of poisson distributed random numbers.
+    """
     return np.random.poisson(lamda, num_samples)
